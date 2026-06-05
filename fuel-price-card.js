@@ -101,40 +101,54 @@ class FuelPriceCard extends HTMLElement {
       const card = document.createElement('ha-card');
       this.content = document.createElement('div');
       
+      this.content.style.display = 'grid';
+      this.content.style.gridTemplateColumns = '1fr auto';
+      this.content.style.gridTemplateRows = '1fr 1fr';
       this.content.style.padding = '16px';
-      this.content.style.display = 'flex';
-      this.content.style.justifyContent = 'space-between';
-      this.content.style.alignItems = 'center';
-      
-      this.leftContainer = document.createElement('div');
-      this.leftContainer.style.display = 'flex';
-      this.leftContainer.style.alignItems = 'center';
-      this.leftContainer.style.gap = '16px';
+      this.content.style.boxSizing = 'border-box';
+      this.content.style.aspectRatio = '1 / 1';
+      this.content.style.height = '100%';
+      this.content.style.width = '100%';
 
       this.logoImg = document.createElement('img');
-      this.logoImg.style.width = '40px';
-      this.logoImg.style.height = '40px';
+      this.logoImg.style.gridColumn = '1 / 3';
+      this.logoImg.style.gridRow = '1 / 2';
+      this.logoImg.style.width = '48px';
+      this.logoImg.style.height = '48px';
       this.logoImg.style.objectFit = 'contain';
-      this.logoImg.style.borderRadius = '4px'; 
+      this.logoImg.style.alignSelf = 'start';
       
       this.nameSpan = document.createElement('div');
+      this.nameSpan.style.gridColumn = '1 / 2';
+      this.nameSpan.style.gridRow = '2 / 3';
       this.nameSpan.style.fontSize = '16px';
       this.nameSpan.style.fontWeight = '500';
-      this.nameSpan.style.color = 'var(--primary-text-color)';
-
-      this.leftContainer.appendChild(this.logoImg);
-      this.leftContainer.appendChild(this.nameSpan);
+      this.nameSpan.style.color = 'var(--secondary-text-color)';
+      this.nameSpan.style.alignSelf = 'end';
+      this.nameSpan.style.whiteSpace = 'nowrap';
+      this.nameSpan.style.overflow = 'hidden';
+      this.nameSpan.style.textOverflow = 'ellipsis';
+      this.nameSpan.style.paddingRight = '8px';
 
       this.priceContainer = document.createElement('div');
+      this.priceContainer.style.gridColumn = '2 / 3';
+      this.priceContainer.style.gridRow = '2 / 3';
       this.priceContainer.style.fontSize = '28px';
       this.priceContainer.style.fontWeight = '400';
       this.priceContainer.style.color = 'var(--primary-text-color)';
+      this.priceContainer.style.alignSelf = 'end';
+      this.priceContainer.style.justifySelf = 'end';
       this.priceContainer.style.lineHeight = '1em';
       
-      this.content.appendChild(this.leftContainer);
+      this.content.appendChild(this.logoImg);
+      this.content.appendChild(this.nameSpan);
       this.content.appendChild(this.priceContainer);
       card.appendChild(this.content);
       this.appendChild(card);
+
+      this.logoImg.onerror = () => {
+        this.logoImg.style.display = 'none';
+      };
     }
 
     const entityId = this.config.entity;
@@ -148,7 +162,7 @@ class FuelPriceCard extends HTMLElement {
     const attrs = state.attributes || {};
     
     const name = this.config.name || attrs.station_name || attrs.friendly_name || entityId;
-    const logoUrl = this.config.logo || attrs.station_logo || '';
+    const logoUrl = this.config.logo || attrs.entity_picture || attrs.station_logo || '';
     const price = state.state;
     const currency = this.config.currency !== undefined ? this.config.currency : '$';
 
@@ -187,5 +201,5 @@ window.customCards.push({
   type: "fuel-price-card",
   name: "Fuel Price Card",
   preview: true,
-  description: "A custom sensor card tailored for fuel prices, integrating automatically with ha-gasbuddy."
+  description: "A custom 2x2 tile card tailored for fuel prices."
 });
